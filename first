@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cheer Up Envelope & Confetti E‑Card</title>
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #f0f8ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+      position: relative;
+    }
+    /* Envelope Container */
+    .envelope {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      overflow: visible; /* Allow the sliding letter to be seen */
+    }
+    /* Triangular Flap Styling (hinged at the top) */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #ffb6c1;  /* Light pink flap */
+      border-bottom: 2px solid #ccc;
+      /* Create a triangular shape using clip-path */
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      /* Hinge at the top edge */
+      transform-origin: top center;
+      transition: transform 1s ease;
+      z-index: 2;
+    }
+    /* When opened, the flap rotates downward from the top */
+    .envelope.open .flap {
+      transform: rotateX(-180deg);
+    }
+    /* Letter Styling with a subtle scaling ("bloom") effect */
+    .letter {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 20px;
+      text-align: center;
+      /* Start hidden: moved upward and slightly scaled down */
+      transform: translateY(-100%) scale(0.8);
+      opacity: 0;
+      transition: transform 1s ease, opacity 1s ease;
+      z-index: 3; /* Bring the letter above the flap once it slides down */
+      border-bottom: 1px solid #ccc;
+    }
+    /* When activated, the letter slides down, scales to full size, and becomes fully opaque */
+    .letter.slide-out {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    /* Flower Styling */
+    .flower {
+      display: inline-block;
+      margin-top: 15px;
+      font-size: 50px;
+      opacity: 0;
+      transform: scale(0);
+    }
+    /* Bloom animation for the flower */
+    .flower.bloom {
+      animation: bloom 1s forwards;
+    }
+    @keyframes bloom {
+      from {
+        opacity: 0;
+        transform: scale(0);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+  <!-- Include canvas-confetti library from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Envelope Container -->
+    <div class="envelope" id="envelope">
+      <!-- Envelope Triangular Flap (hinged at the top) -->
+      <div class="flap"></div>
+      <!-- Hidden Letter with a Cheer-Up Message -->
+      <div class="letter" id="letter">
+        <h2>Hey Sunshine! ☀️</h2>
+        <p>
+          I know things have been a bit gloomy lately 😔,<br>
+          but remember, your smile brightens up every room! 😊<br>
+          You’re a sparkling star that makes even cloudy days shine 🌟.<br>
+          Keep shining, and know that brighter days are just around the corner 🌈💫<br>
+          Sending you endless hugs and cheerful vibes 🤗💖!
+        </p>
+        <!-- Flower Element (a tulip emoji) that will bloom -->
+        <div id="flower" class="flower">🌷</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Grab elements from the DOM
+    const envelope = document.getElementById('envelope');
+    const letter = document.getElementById('letter');
+    const flower = document.getElementById('flower');
+
+    // On envelope click, animate the flap, slide down the letter, trigger confetti, then bloom the flower
+    envelope.addEventListener('click', () => {
+      // Open the envelope (animate flap)
+      envelope.classList.add('open');
+
+      // After the flap animation (1 second), slide down the letter
+      setTimeout(() => {
+        letter.classList.add('slide-out');
+
+        // Trigger confetti when the letter opens
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+
+        // After an additional 1 second, bloom the flower
+        setTimeout(() => {
+          flower.classList.add('bloom');
+        }, 1000);
+      }, 1000);
+    });
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+  </script>
+</body>
+</html>
